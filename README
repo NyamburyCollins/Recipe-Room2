@@ -1,0 +1,91 @@
+Recipe-Room
+Recipe-Room is a full-stack web application for discovering, sharing, and managing your favorite recipes. It uses React for the frontend, Flask for the backend, and integrates with TheMealDB API to provide access to thousands of recipes.
+
+Features
+User Authentication: Secure registration and login using JWT.
+Recipe Search: Search recipes by name, ingredient, or region using TheMealDB API.
+Bookmarks: Save your favorite recipes for quick access.
+Ratings & Comments: Rate and comment on recipes.
+Groups: Create and join groups to share and discuss recipes with friends.
+Responsive Design: Optimized for mobile and desktop devices.
+Tech Stack
+
+Frontend
+React (created with Create React App)
+Redux Toolkit (state management)
+Axios (API requests)
+Bootstraps (styling)
+
+Backend
+Flask (Python web framework)
+Flask-JWT-Extended (authentication)
+Flask-SQLAlchemy (database ORM)
+Marshmallow (serialization & validation)
+Cloudinary (image uploads)
+Database
+PostgreSQL (development & production)
+
+Project Structure
+Recipe-Room/
+├── frontend/          # React application
+│   ├── src/
+│   ├── public/
+│   └── package.json
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── extensions.py
+│   │   ├── models.py
+│   │   ├── routes/
+│   │   │   ├── api_routes.py
+│   │   │   ├── auth_routes.py
+│   │   │   ├── bookmark_routes.py
+│   │   │   ├── comment_routes.py
+│   │   │   └── group_routes.py
+│   │   └── schemas/
+│   │       ├── user_schema.py
+│   │       ├── recipe_schema.py
+│   │       └── group_schema.py
+│   └── requirements.txt
+└── README.md
+Setup & Installation
+Backend
+Navigate to the backend folder:
+
+cd backend
+Create and activate a virtual environment:
+
+python3 -m venv venv
+source venv/bin/activate
+Install dependencies:
+
+pip install -r requirements.txt
+Set up environment variables (e.g., .env for database URL and JWT secret).
+
+Run the Flask server:
+
+flask run
+Frontend
+Navigate to the frontend folder:
+
+cd frontend
+Install dependencies:
+
+npm install
+Start the React app:
+
+npm start
+API Routes Overview
+Authentication: /register, /login
+Recipes: /recipes (search & fetch from TheMealDB)
+Bookmarks: /bookmark, /bookmarks
+Ratings: /rating, /ratings/<recipe_id>
+Comments: /comment, /comments/<recipe_id>
+Groups: /groups (create, join, manage groups)
+
+Contributors
+Collins Nyambury
+Marylyne Otieno
+Emmanuel Ngetich
+Brigid Michelle Syondie
