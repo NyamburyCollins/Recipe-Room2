@@ -3,12 +3,11 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
-  api_key: process.env.CLOUDINARY_API_KEY!,
-  api_secret: process.env.CLOUDINARY_API_SECRET!,
-  secure: true,
-});
+const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+const apiKey = import.meta.env.VITE_CLOUDINARY_API_KEY;
+
+
 
 export async function uploadRecipeImage(filePath: string, recipeName: string): Promise<string | null> {
   const publicId = `recipes/${sanitizeRecipeName(recipeName)}`;

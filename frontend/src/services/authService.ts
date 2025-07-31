@@ -62,3 +62,13 @@ export const isAuthenticated = (): boolean => {
 export const getAuthToken = (): string | null => {
   return localStorage.getItem('token');
 };
+
+export const resetPassword = async (email: string) => {
+  const response = await axios.post('/api/auth/reset-password', { email });
+  return response.data;
+};
+
+export interface AuthResponse {
+  token: string;
+  user: User;
+}
