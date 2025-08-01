@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { AppDispatch } from "../store";
-import { resetPassword } from "../store/authSlice";
+import { resetPassword } from "../store/authSlice"; 
 
 const ForgotPassword: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,7 +18,7 @@ const ForgotPassword: React.FC = () => {
     setLoading(true);
 
     try {
-      await dispatch(resetPassword(email)).unwrap();
+      await dispatch(resetPassword( email )).unwrap(); // ✅ Pass email as object if needed
       navigate("/login", {
         state: { success: "Password reset link sent. Check your email." },
       });
@@ -32,7 +32,10 @@ const ForgotPassword: React.FC = () => {
   return (
     <div className="container mt-5" style={{ maxWidth: "400px" }}>
       <h2 className="mb-4 text-center text-primary">Forgot Password</h2>
-      <form onSubmit={handleSubmit} className="border p-4 rounded bg-white shadow">
+      <form
+        onSubmit={handleSubmit}
+        className="border p-4 rounded bg-white shadow"
+      >
         {error && <div className="alert alert-danger">{error}</div>}
 
         <div className="mb-3">
@@ -51,7 +54,11 @@ const ForgotPassword: React.FC = () => {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+        <button
+          type="submit"
+          className="btn btn-primary w-100"
+          disabled={loading}
+        >
           {loading ? "Sending..." : "Send Reset Link"}
         </button>
 

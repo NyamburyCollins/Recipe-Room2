@@ -1,14 +1,14 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    "target": "ES2022",
     "module": "ESNext",
-    "target": "ESNext",
     "moduleResolution": "Node",
-    "esModuleInterop": true,
     "strict": true,
     "jsx": "react-jsx",
-    "skipLibCheck": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node", "vite/client"]
   },
   "include": ["src"]
 }

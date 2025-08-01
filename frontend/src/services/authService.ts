@@ -1,74 +1,40 @@
-import axios from '../api/axios';
-
-const API_URL = `${import.meta.env.VITE_API_URL}/auth`;
-
-export interface User {
-  id: number;
+export type User = {
   username: string;
   email: string;
-  profile_image_url?: string;
-  created_at?: string;
-}
-
-export interface AuthResponse {
-  access_token: string;
-  user: User;
-}
-
-// Save token & user to localStorage
-const saveAuthData = (data: AuthResponse) => {
-  localStorage.setItem('token', data.access_token);
-  localStorage.setItem('user', JSON.stringify(data.user));
+  password: string;
 };
 
-// Login
-export const login = async (
-  credentials: { email: string; password: string }
-): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>(`${API_URL}/login`, credentials);
-  const data = response.data;
-  saveAuthData(data);
-  return data;
+const USER_KEY = "recipe-room-user";
+
+export const register = (user: User): boolean => {
+  const users = JSON.parse(localStorage.getItem("users") || "[]");
+  const exists = users.some((u: User) => u.email === user.email);
+  if (exists) return false;
+
+  users.push(user);
+  localStorage.setItem("users", JSON.stringify(users));
+  return true;
 };
 
-// Register
-export const register = async (
-  userData: { username: string; email: string; password: string }
-): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>(`${API_URL}/register`, userData);
-  const data = response.data;
-  saveAuthData(data);
-  return data;
+export const login = (email: string, password: string): boolean => {
+  const users = JSON.parse(localStorage.getItem("users") || "[]");
+  const user = users.find((u: User) => u.email === email && u.password === password);
+  if (user) {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    return true;
+  }
+  return false;
 };
 
-// Logout
-export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
+export const logout = (): void => {
+  localStorage.removeItem(USER_KEY);
 };
 
-// Get current user
 export const getCurrentUser = (): User | null => {
-  const storedUser = localStorage.getItem('user');
-  return storedUser ? JSON.parse(storedUser) : null;
+  const user = localStorage.getItem(USER_KEY);
+  return user ? JSON.parse(user) : null;
 };
 
-// Check if user is authenticated
 export const isAuthenticated = (): boolean => {
-  return !!localStorage.getItem('token');
+  return !!localStorage.getItem(USER_KEY);
 };
-
-// Get auth token
-export const getAuthToken = (): string | null => {
-  return localStorage.getItem('token');
-};
-
-export const resetPassword = async (email: string) => {
-  const response = await axios.post('/api/auth/reset-password', { email });
-  return response.data;
-};
-
-export interface AuthResponse {
-  token: string;
-  user: User;
-}

@@ -1,106 +1,60 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import * as authService from "../services/authService";
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-}
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { User } from '../types/user'; // Ensure you have this
+import { getUserFromStorage } from '../services/localStorageService';
 
 interface AuthState {
   user: User | null;
-  token: string | null;
   loading: boolean;
   error: string | null;
 }
 
-const userFromStorage = localStorage.getItem("user");
 const initialState: AuthState = {
-  user: userFromStorage ? JSON.parse(userFromStorage).user : null,
-  token: userFromStorage ? JSON.parse(userFromStorage).token : null,
+  user: getUserFromStorage(),  // <-- load user from storage
   loading: false,
   error: null,
 };
 
-// Async Thunks
-export const loginUser = createAsyncThunk(
-  "auth/login",
-  async (credentials: { email: string; password: string }, thunkAPI) => {
-    try {
-      return await authService.login(credentials);
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message || "Login failed");
-    }
-  }
-);
-
-export const registerUser = createAsyncThunk(
-  "auth/register",
-  async (userData: { username: string; email: string; password: string }, thunkAPI) => {
-    try {
-      return await authService.register(userData);
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message || "Registration failed");
-    }
-  }
-);
-
+// Async thunk for password reset (example)
 export const resetPassword = createAsyncThunk(
-  "auth/resetPassword",
+  'auth/resetPassword',
   async (email: string, thunkAPI) => {
     try {
-      return await authService.resetPassword(email);
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message || "Reset password failed");
+      // Replace this with real API call
+      const response = await new Promise((resolve) =>
+        setTimeout(() => resolve({ message: 'Reset email sent to ' + email }), 1000)
+      );
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue('Failed to reset password');
     }
   }
 );
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
+    loginSuccess: (state, action: PayloadAction<User>) => {
+      state.user = action.payload;
+      state.error = null;
+    },
     logout: (state) => {
       state.user = null;
-      state.token = null;
-      localStorage.removeItem("user");
+    },
+    setUserFromStorage: (state) => {
+      state.user = getUserFromStorage();  // <-- sync Redux with localStorage
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(loginUser.fulfilled, (state, action: PayloadAction<{ token: string; user: User }>) => {
-        state.loading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-      .addCase(registerUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(registerUser.fulfilled, (state, action: PayloadAction<{ token: string; user: User }>) => {
-        state.loading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
       .addCase(resetPassword.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(resetPassword.fulfilled, (state) => {
         state.loading = false;
+        state.error = null;
       })
       .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
@@ -109,5 +63,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { loginSuccess, logout, setUserFromStorage } = authSlice.actions;
 export default authSlice.reducer;
